@@ -1,0 +1,62 @@
+#!/bin/bash
+
+set -e
+
+DB='postgres://postgres@postgres_db10:5432'
+
+if [ -f /archive/.migrate.44.pg_reindex_complete ];
+then
+  echo 'Restore complete.'
+  exit 0
+
+elif [ -f /archive/.migrate.44.pg_restore_started ];
+then
+  echo 'Restore happening on another node.'
+  exit 1
+
+elif [ -f /archive/pg_dump.gz.txt ] && [ -f /archive/.migrate.44.pg_dump_complete ];
+then
+
+  echo '===> Preparing new database for migration'
+  psql ${DATABASE_URL:-$DB} -f /database/main.sql
+
+  date > /archive/.migrate.44.pg_restore_started
+
+  # restore data
+  pg_restore --disable-triggers \
+    -d "${DATABASE_URL:-$DB}" \
+    /archive/pg_dump.gz.txt
+
+  # update release #
+  psql ${DATABASE_URL:-$DB} -c "update version set version='v4.4.0';"
+
+  # disable indexes
+  psql ${DATABASE_URL:-$DB} -c "UPDATE pg_index
+    SET indisready=false
+    WHERE indrelid in (
+        SELECT oid
+        FROM pg_class
+        WHERE relname in ('branches', 'commits', 'owners', 'pulls', 'repos', 'sessions', 'yaml')
+    );"
+
+  date > /archive/.migrate.44.pg_restore_complete
+
+  # enable indexes
+  psql ${DATABASE_URL:-$DB} -c "UPDATE pg_index
+    SET indisready=true
+    WHERE indrelid in (
+        SELECT oid
+        FROM pg_class
+        WHERE relname in ('branches', 'commits', 'owners', 'pulls', 'repos', 'sessions', 'yaml')
+    );"
+
+  # reindex
+  psql ${DATABASE_URL:-$DB} -c "REINDEX TABLE branches;REINDEX TABLE commits;REINDEX TABLE owners;REINDEX TABLE pulls;REINDEX TABLE repos;REINDEX TABLE sessions;REINDEX TABLE yaml_history;"
+  date > /archive/.migrate.44.pg_reindex_complete
+
+  rm /archive/pg_dump.gz.txt
+
+else
+  echo 'No pg_dump file found to restore.'
+  exit 1
+fi

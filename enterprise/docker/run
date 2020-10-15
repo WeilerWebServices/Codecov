@@ -1,0 +1,109 @@
+#!/bin/sh
+
+set -e
+
+proc="$1"
+shift
+
+stop_codecov() {
+  kill -TERM "$child"
+}
+
+trap stop_codecov SIGTERM
+
+export DOCKER="true"
+
+if [ -f "/codecov.yml" ];
+then
+  # move coddecov to config folder
+  cp /codecov.yml /config/codecov.yml
+fi
+
+if [ ! -f "/config/codecov.yml" ];
+then
+  echo '[docker] No codecov.yml file found.'
+  touch /config/codecov.cleaned.yml
+else
+  # remove null values from the yaml, just to be safe
+  tr < /config/codecov.yml -d '\000' > /config/codecov.cleaned.yml
+fi
+
+if [ "$proc" = "config" ];
+then
+  codecov config "$@" \
+    --config /config/codecov.cleaned.yml
+
+elif [ "$proc" = "web" ];
+then
+  echo '[docker] Starting web process...'
+
+  codecov web \
+    --config /config/codecov.cleaned.yml \
+  &
+
+  child=$!
+  wait "$child"
+
+  echo '[docker] Web process exited'
+
+elif [ "$proc" = "worker" ];
+then
+  echo '[docker] Starting worker process...'
+
+  codecov worker \
+    --config /config/codecov.cleaned.yml \
+  &
+
+  child=$!
+  wait "$child"
+
+  echo '[docker] Worker process exited'
+
+elif [ "$proc" = "check" ];
+then
+  echo '[docker] Running container health check...'
+
+  _ps=$(ps)
+
+  if echo "$_ps" | grep "/bin/codecov web" 1>/dev/null;
+  then
+    codecov test web \
+      --url http://127.0.0.1:5000/ping \
+      --config /config/codecov.cleaned.yml \
+    || exit 1
+  elif echo "$_ps" | grep "/bin/codecov worker" 1>/dev/null;
+  then
+    codecov test worker \
+      --config /config/codecov.cleaned.yml \
+    || exit 1
+  elif echo "$_ps" | grep "/bin/codecov monitor" 1>/dev/null;
+  then
+    codecov test monitor \
+      --config /config/codecov.cleaned.yml \
+    || exit 1
+  else
+    codecov test \
+      --config /config/codecov.cleaned.yml \
+    || exit 1
+  fi
+
+elif [ "$proc" = "monitor" ];
+then
+  echo '[docker] Starting monitor process...'
+
+  codecov monitor \
+    --config /config/codecov.cleaned.yml \
+  &
+
+  child=$!
+  wait "$child"
+
+  echo '[docker] Monitor process exited'
+
+else
+  echo '[docker] no entrypoint specified'
+  exit 1
+fi
+
+exit 0
+# EOF

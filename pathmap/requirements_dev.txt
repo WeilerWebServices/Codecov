@@ -1,0 +1,7 @@
+wheel
+flake8
+tox
+Sphinx
+pytest
+pytest-cov
+py>=1.4.29

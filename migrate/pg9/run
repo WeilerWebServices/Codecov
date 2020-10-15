@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -e
+
+DB='postgres://postgres@postgres:5432'
+
+if [ -f /archive/.migrate.44.pg_dump_complete ];
+then
+  echo 'Dump already complete.'
+
+elif [ -f /archive/.migrate.44.pg_dump_started ];
+then
+  echo 'Dump in progress'
+  exit 1
+
+else
+  echo '===> Preparing old database for migration'
+  psql ${DATABASE_URL:-$DB} -f /pre.sql
+
+  echo '===> Copying over data'
+  date > /archive/.migrate.44.pg_dump_started
+
+  pg_dump ${DATABASE_URL:-$DB} \
+    --data-only -Fc --no-acl -Z9 --no-owner \
+    > /archive/pg_dump.gz.txt
+
+  date > /archive/.migrate.44.pg_dump_complete
+
+fi

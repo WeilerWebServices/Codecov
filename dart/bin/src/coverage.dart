@@ -1,0 +1,158 @@
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+library dart_codecov_generator.bin.src.coverage;
+
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:logging/logging.dart';
+import 'package:path/path.dart' as path;
+
+import 'env.dart';
+import 'test.dart' show Test, BrowserTest, VmTest;
+
+
+int _coverageCount = 0;
+const int _defaultObservatoryPort = 8444;
+const String tempCoverageDirPath = '__temp_coverage';
+Directory coverageDir = new Directory('coverage');
+
+class Coverage {
+  static Future<Coverage> merge(List<Coverage> coverages) async {
+    if (coverages.length == 0) throw new ArgumentError('Cannot merge an empty list of coverages.');
+    Logger log = new Logger('dcg');
+    Coverage merged = new Coverage(null);
+    merged._tempCoverageDir = coverageDir;
+
+    for (int i = 0; i < coverages.length; i++) {
+      if (await coverages[i].coverageFile.exists()) {
+        File coverageFile = coverages[i].coverageFile;
+        String base = path.basename(coverageFile.path);
+        coverageFile.rename('${coverageDir.path}/$i-$base');
+      }
+    }
+    log.info('Merging complete');
+    return merged;
+  }
+
+  Test test;
+  File lcovOutput;
+  File coverageFile;
+  Directory _tempCoverageDir;
+  Coverage(this.test) {
+    _coverageCount++;
+  }
+
+  Future<bool> collect() async {
+    Logger log = new Logger('dcg');
+    bool testSuccess = await test.run();
+    if (!testSuccess) {
+      try {
+        log.info(await test.process.stderr.transform(utf8.decoder).join(''));
+      } catch(e) {}
+      log.severe('Testing failed.');
+      test.kill();
+      return false;
+    }
+    int port = test is BrowserTest ? (test as BrowserTest).observatoryPort : _defaultObservatoryPort;
+    Directory _tempCoverageDir = new Directory('${coverageDir.path}/${_coverageCount}');
+    await _tempCoverageDir.create(recursive: true);
+
+    log.info('Collecting coverage...');
+    ProcessResult pr = await Process.run('pub', [
+      'run',
+      'test',
+      '--coverage',
+      '${_tempCoverageDir.path}',
+    ]);
+    log.info('Coverage collected');
+
+    test.kill();
+    log.info(pr.stdout);
+
+    Directory testDir = new Directory('${_tempCoverageDir.path}/test');
+    List<FileSystemEntity> entities = testDir.listSync();
+    if (entities.length == 1 && entities[0] is File) {
+      coverageFile = entities[0] as File;
+    }
+
+    if (pr.exitCode == 0) {
+      log.info('Coverage collected.');
+      return true;
+    } else {
+      log.info(pr.stderr);
+      log.severe('Coverage collection failed.');
+      return false;
+    }
+  }
+
+  Future<bool> format() async {
+    Logger log = new Logger('dcg');
+    log.info('Formatting coverage...');
+    lcovOutput = new File('${_tempCoverageDir.path}/coverage.lcov');
+    List<String> args = [
+      'run',
+      'coverage:format_coverage',
+      '--lcov',
+      '--packages=.packages',
+      '-i',
+      _tempCoverageDir.path,
+      '-o',
+      lcovOutput.path,
+    ];
+
+    if (env.reportOn != null) {
+      args.addAll(env.reportOn.map((r) => '--report-on=$r'));
+    }
+    if (env.verbose) {
+      args.add('--verbose');
+    }
+    ProcessResult pr = await Process.run('pub', args);
+
+    log.info(pr.stdout);
+    if (pr.exitCode == 0) {
+      log.info('Coverage formatted.');
+      return true;
+    } else {
+      log.info(pr.stderr);
+      log.severe('Coverage formatting failed.');
+      return false;
+    }
+  }
+
+  Future<bool> generateHtml() async {
+    Logger log = new Logger('dcg');
+    log.info('Generating HTML...');
+    ProcessResult pr = await Process.run('genhtml', ['-o', 'coverage_report', lcovOutput.path]);
+
+    log.info(pr.stdout);
+    if (pr.exitCode == 0) {
+      log.info('HTML generated.');
+      return true;
+    } else {
+      log.info(pr.stderr);
+      log.severe('HTML generation failed.');
+      return false;
+    }
+  }
+
+  void cleanUp({recursive: false}) {
+    if (test != null) {
+      test.cleanUp();
+    }
+    if (_tempCoverageDir != null) {
+      _tempCoverageDir.deleteSync(recursive: recursive);
+    }
+  }
+}

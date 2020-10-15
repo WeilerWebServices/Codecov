@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# bin/detect <build-dir>
+echo "cpp" && exit 0

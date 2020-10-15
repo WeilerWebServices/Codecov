@@ -1,0 +1,8 @@
+coverage==5.3
+ddt
+mock
+pytest>=4.6.0
+pytest-cov
+funcsigs
+requests
+black ; python_version >= '3.7'

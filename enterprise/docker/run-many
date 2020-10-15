@@ -1,0 +1,184 @@
+#!/bin/sh
+
+set -e +o pipefail
+
+stop_codecov() {
+  kill -TERM "$child"
+}
+
+trap stop_codecov SIGTERM
+
+if [ -f "/codecov.yml" ];
+then
+  # move coddecov to config folder
+  cp /codecov.yml /config/codecov.yml
+fi
+
+if [ ! -f "/config/codecov.yml" ];
+then
+  echo '[docker] No codecov.yml file found.'
+else
+  # remove null values from the yaml, just to be safe
+  tr < /config/codecov.yml -d '\000' > /config/codecov.cleaned.yml
+fi
+
+if [ ! -f "/config/supervisord.conf" ];
+then
+  n_nginx=0
+  n_web=0
+  n_worker=0
+  n_monitor=0
+
+  worker_concurrency='1'
+  worker_queue='celery'
+
+  web_frontends='server localhost:8880;'
+  web_https=''
+
+  nginx_processes=1
+
+  config="--config /config/codecov.cleaned.yml"
+
+  if [ ! -f /config/nginx.conf ];
+  then
+    if [ -f /config/codecov.crt ] && [ -f /config/codecov.key ];
+    then
+      web_https=",SETUP__HTTP__FORCE_HTTPS='true'"
+      cp /config/https.nginx.conf /config/nginx.conf 2>/dev/null || echo ''
+    else
+      cp /config/http.nginx.conf /config/nginx.conf 2>/dev/null || echo ''
+    fi
+  fi
+
+  if [ $# != 0 ];
+  then
+    while getopts "c:m:n:q:w:W:" o
+    do
+      case "$o" in
+        "c")
+          worker_concurrency="$OPTARG"
+          ;;
+        "m")
+          n_monitor="$OPTARG"
+          ;;
+        "n")
+          n_nginx="$OPTARG"
+          ;;
+        "N")
+          nginx_processes="$OPTARG"
+          ;;
+        "q")
+          worker_queue="$OPTARG"
+          ;;
+        "w")
+          n_web="$OPTARG"
+          i="0"
+          while [ $i -lt $(expr $n_web - 1) ]
+          do
+            i=$[$i+1]
+            web_frontends="$web_frontends
+server localhost:888$i;"
+          done
+          ;;
+        "W")
+          n_worker="$OPTARG"
+          ;;
+      esac
+    done
+  fi
+
+  echo "
+[unix_http_server]
+file=/tmp/supervisor.sock
+
+[supervisord]
+user=root
+pidfile=/tmp/supervisord.pid
+nodaemon=true
+logfile=/dev/stdout
+logfile_maxbytes=0
+" > /config/supervisord.conf
+
+  if [ $n_web != 0 ];
+  then
+    echo "
+[program:web]
+command=codecov web -p 888%(process_num)d $config
+numprocs=$n_web
+process_name=%(program_name)s_%(process_num)d
+autorestart=true
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+priority=1
+environment=DOCKER='true'$web_https
+" >> /config/supervisord.conf
+  fi
+
+  if [ $n_monitor != 0 ];
+  then
+    echo "
+[program:monitor]
+command=codecov monitor -p 5000 $config
+numprocs=$n_monitor
+process_name=%(program_name)s_%(process_num)d
+autorestart=true
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+priority=1
+environment=DOCKER='true'
+" >> /config/supervisord.conf
+  fi
+
+  if [ $n_worker != 0 ];
+  then
+    echo "
+[program:worker]
+command=codecov worker -n %(process_num)d -c $worker_concurrency --queue $worker_queue $config
+numprocs=$n_worker
+process_name=%(program_name)s_%(process_num)d
+autorestart=true
+startsecs=10
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+priority=2
+environment=DOCKER='true'
+" >> /config/supervisord.conf
+  fi
+
+  if [ $n_nginx != 0 ];
+  then
+
+    sed -e "s/__FRONTENDS__/$web_frontends/" /config/nginx.conf \
+      | sed -e "s/__NGINX_PROCESSES__/$nginx_processes/" \
+      > /config/nginx.cleaned.conf
+
+    echo "
+[program:nginx]
+command=sh -c 'sleep 10 && exec nginx -c /config/nginx.cleaned.conf'
+numprocs=$n_nginx
+process_name=%(program_name)s_%(process_num)d
+autorestart=true
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+priority=3
+" >> /config/supervisord.conf
+  fi
+
+fi
+
+# run supervisor
+/usr/bin/supervisord \
+  -c /config/supervisord.conf \
+  &
+
+child=$!
+wait "$child"
+echo '[docker] Supervisord process exited'

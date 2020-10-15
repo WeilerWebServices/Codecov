@@ -1,0 +1,12 @@
+sudo: require
+language: cpp
+compiler: gcc
+
+before_install: 
+ - sudo pip install codecov
+
+script: 
+ - ./build.sh
+ - ./travis_qmake_gcc_cpp98_gcov
+ - ./get_code_cov.sh
+ - codecov

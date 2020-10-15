@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="android-unittest-stepicon-a" x1="50%" x2="50%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#53A906"/>
+      <stop offset="100%" stop-color="#A4C639"/>
+    </linearGradient>
+    <linearGradient id="android-unittest-stepicon-b" x1="50%" x2="50%" y1="33.183%" y2="184.077%">
+      <stop offset="0%" stop-color="#FFF"/>
+      <stop offset="100%" stop-color="#92C02E"/>
+    </linearGradient>
+    <linearGradient id="android-unittest-stepicon-c" x1="-26.536%" x2="122.497%" y1="-23.221%" y2="87.157%">
+      <stop offset="0%" stop-color="#0DD3C5"/>
+      <stop offset="8.751%" stop-color="#0DC0C7"/>
+      <stop offset="100%" stop-color="#0D83CD"/>
+    </linearGradient>
+    <linearGradient id="android-unittest-stepicon-d" x1="-26.536%" x2="122.497%" y1="-29.561%" y2="90.374%">
+      <stop offset="0%" stop-color="#0DD3C5"/>
+      <stop offset="8.751%" stop-color="#0DC0C7"/>
+      <stop offset="100%" stop-color="#0D83CD"/>
+    </linearGradient>
+    <linearGradient id="android-unittest-stepicon-e" x1="-36.375%" x2="415.4%" y1="50%" y2="50%">
+      <stop offset="0%" stop-color="#FFF"/>
+      <stop offset="100%" stop-color="#92C02E"/>
+    </linearGradient>
+    <linearGradient id="android-unittest-stepicon-f" x1="42.287%" x2="57.306%" y1="-146.466%" y2="149.7%">
+      <stop offset="0%" stop-color="#0DD3C5"/>
+      <stop offset="8.751%" stop-color="#0DC0C7"/>
+      <stop offset="100%" stop-color="#0D83CD"/>
+    </linearGradient>
+    <linearGradient id="android-unittest-stepicon-g" x1="50%" x2="50%" y1="121.488%" y2="0%">
+      <stop offset="0%" stop-color="#FFF" stop-opacity=".7"/>
+      <stop offset="100%" stop-color="#FFF"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <rect width="256" height="256" fill="url(#android-unittest-stepicon-a)"/>
+    <g transform="translate(43 44)">
+      <path fill="url(#android-unittest-stepicon-b)" d="M65.9925245,79.1787136 C65.991645,73.5558169 61.5160284,68.9986599 55.9947233,69.0000033 C50.473858,68.9955254 45.9986811,73.5607425 46.0000003,79.184087 L46.007036,121.820394 C46.0065963,127.449112 50.4800143,131.998209 56.0048372,132 C61.5257025,131.999104 65.9986808,127.449112 66,121.815916 L65.9925245,79.1787136 Z"/>
+      <path fill="url(#android-unittest-stepicon-c)" d="M77,69.0152671 L77.0158385,114.272023 C77.0108607,120.298916 81.9235128,125.163268 87.994186,125.164615 L158.016675,125.153838 C164.072414,125.156083 168.998642,120.284547 169,114.257654 L168.988687,69 L77,69.0152671 Z" style="mix-blend-mode:multiply"/>
+      <path fill="url(#android-unittest-stepicon-d)" d="M35,148 L57.5,148 C63.2989899,148 68,152.70101 68,158.5 L68,158.5 C68,164.29899 63.2989899,169 57.5,169 L35,169 L35,148 Z" style="mix-blend-mode:multiply"/>
+      <path fill="url(#android-unittest-stepicon-e)" d="M0,111 L22.5,111 C28.2989899,111 33,115.70101 33,121.5 L33,121.5 C33,127.29899 28.2989899,132 22.5,132 L0,132 L0,111 Z" transform="matrix(-1 0 0 1 33 0)"/>
+      <path fill="url(#android-unittest-stepicon-f)" d="M22.9960429,34.0000021 C17.4754661,33.9973154 13.001319,38.5633958 13,44.1808791 L13.0074745,86.8159885 C13.0087935,92.4527267 17.4846993,97.0008956 23.0057158,97 C28.5298101,97.0004478 33.0048364,92.4495922 32.9991206,86.8164362 L33,44.1750579 C32.9978016,38.5589179 28.5170594,33.9964198 22.9960429,34.0000021 L22.9960429,34.0000021 Z" style="mix-blend-mode:multiply"/>
+      <path fill="url(#android-unittest-stepicon-g)" d="M74.1333333,15.2631579 C79.5,12.9736842 84.8666667,12.2105263 91,12.2105263 C96.3666667,12.2105263 100.966667,12.9736842 105.566667,14.5 L117.833333,2.28947368 C120.9,-0.763157895 125.5,-0.763157895 128.566667,2.28947368 C131.633333,5.34210526 131.633333,9.92105263 128.566667,12.9736842 L119.366667,22.1315789 C130.1,30.5263158 137,43.5 137,58 L45,58 C45,44.2631579 51.1333333,32.0526316 61.1,23.6578947 L50.3666667,12.9736842 C47.3,9.92105263 47.3,5.34210526 50.3666667,2.28947368 C53.4333333,-0.763157895 58.0333333,-0.763157895 61.1,2.28947368 L74.1333333,15.2631579 Z M114.5,51 C119,51 122,48 122,43.5 C122,39.75 119,36 114.5,36 C110,36 107,39.75 107,43.5 C107,48 110,51 114.5,51 Z M68.5,51 C73,51 76,48 76,43.5 C76,39.75 73,36 68.5,36 C64,36 61,39.75 61,43.5 C61,48 64,51 68.5,51 Z"/>
+    </g>
+  </g>
+</svg>

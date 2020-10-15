@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>codecov</id>
+    <version>$version$</version>
+    <owners>Larz White, Kim J. Nordmo</owners>
+    <title>Codecov</title>
+    <authors>Larz White, Kim J. Nordmo</authors>
+    <projectUrl>https://codecov.io</projectUrl>
+    <iconUrl>https://cdn.jsdelivr.net/gh/codecov/media@0953f4e0d5315fb6d526a248bc88e1bc16506a37/logos/pink.png</iconUrl>
+    <copyright>Copyright (c) 2017-Present Larz White, Kim J. Nordmo</copyright>
+    <licenseUrl>https://github.com/codecov/codecov-exe/blob/master/LICENSE.txt</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/codecov/codecov-exe</projectSourceUrl>
+    <packageSourceUrl>https://github.com/codecov/codecov-exe</packageSourceUrl>
+    <docsUrl>https://github.com/codecov/codecov-exe</docsUrl>
+    <bugTrackerUrl>https://github.com/codecov/codecov-exe/issues</bugTrackerUrl>
+    <tags>coverage codecov</tags>
+    <summary>Codecov global executable uploader.</summary>
+    <description>A global executable uploader for PowerShell and Windows Command Line (cmd), which allows users to upload code coverage reports to [Codecov](https://codecov.io). This uploader supports Windows 7 (x64) and above.</description>
+  </metadata>
+  <files />
+</package>

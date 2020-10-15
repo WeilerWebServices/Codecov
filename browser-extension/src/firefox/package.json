@@ -1,0 +1,42 @@
+{
+  "name": "codecov",
+  "title": "Codecov Extension",
+  "id": "hello@codecov.io",
+  "description": "Overlay Coverage reports in Github and Bitbucket",
+  "author": "Codecov",
+  "homepage": "https://github.com/codecov/browser-extension",
+  "icon": "data/icons/codecov-48.png",
+  "license": "Apache v2.0",
+  "version": "1.0.9",
+  "preferences": [
+    {
+      "name": "overlay",
+      "title": "Overlay coverage at startup",
+      "description": "Highlight lines by default",
+      "type": "bool",
+      "value": true
+    },
+    {
+      "name": "enterprise",
+      "title": "Codecov Enterprise domains",
+      "description": "Please type in the domain name of your Codecov Enterprise instance.\nExample: codecov.mycompany.com\nUse comma for multiple entries.",
+      "type": "string"
+    },
+    {
+      "name": "domains",
+      "title": "Github Enterprise domains",
+      "description": "Please type in the domain name of your Github Enterprise instance.\nExample: github.mycompany.com\nUse comma for multiple entries.",
+      "type": "string"
+    },
+    {
+      "name": "debug",
+      "title": "Debug Mode",
+      "description": "Log debug information to console",
+      "type": "bool",
+      "value": false
+    }
+  ],
+  "permissions": {
+    "cross-domain-content": ["https://codecov.io/"]
+  }
+}

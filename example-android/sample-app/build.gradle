@@ -1,0 +1,46 @@
+apply plugin: 'com.android.application'
+apply plugin: 'jacoco-android'
+
+android {
+  compileSdkVersion configCompileSdkVersion
+  buildToolsVersion configBuildToolsVersion
+
+  defaultConfig {
+    minSdkVersion 15
+    targetSdkVersion configTargetSdkVersion
+    versionCode 1
+    versionName project.version
+    testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+  }
+
+  productFlavors {
+    free {
+      applicationId 'com.dicedmelon.example.android.free'
+    }
+    paid {
+      applicationId 'com.dicedmelon.example.android'
+    }
+  }
+
+  buildTypes {
+    debug {
+      applicationIdSuffix '.debug'
+      versionNameSuffix '-debug'
+      testCoverageEnabled true
+    }
+  }
+
+  dataBinding {
+    enabled = true
+  }
+}
+
+dependencies {
+  compile support.appCompat
+
+  testCompile assertJCore
+  testCompile junit
+
+  androidTestCompile supportTest.espressoCore
+  androidTestCompile supportTest.rules
+}

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+    <dict>
+        <key>DefaultValue</key>
+        <false/>
+        <key>Key</key>
+        <string>overlay</string>
+        <key>Title</key>
+        <string>Highlight lines</string>
+        <key>Type</key>
+        <string>CheckBox</string>
+    </dict>
+    <dict>
+        <key>Key</key>
+        <string>enterprise</string>
+        <key>Title</key>
+        <string>Enterprise Sites</string>
+        <key>Type</key>
+        <string>TextField</string>
+    </dict>
+    <dict>
+        <key>DefaultValue</key>
+        <false/>
+        <key>Key</key>
+        <string>debug</string>
+        <key>Title</key>
+        <string>Debug Mode</string>
+        <key>Type</key>
+        <string>CheckBox</string>
+    </dict>
+</array>
+</plist>

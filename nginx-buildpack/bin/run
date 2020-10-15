@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+psmgr=/tmp/nginx-buildpack-wait
+rm -f $psmgr
+mkfifo $psmgr
+
+# Evaluate config
+erb config/nginx.conf.erb > config/nginx.conf
+erb config/web.supervisord.conf.erb > config/web.supervisord.conf
+erb config/worker.supervisord.conf.erb > config/worker.supervisord.conf
+
+mkdir logs  # required, not sure why
+
+n=1
+while getopts :f option ${@:1:2}
+do
+        case "${option}"
+        in
+                f) FORCE=$OPTIND; n=$((n+1));;
+        esac
+done
+
+#Start App Server
+(
+	supervisord -c config/$1.supervisord.conf
+	echo 'app' >$psmgr
+) &
+
+if [[ -z "$FORCE" ]] && [ $1 == "web" ]
+then
+	FILE="/tmp/app-initialized"
+
+	#We block on app-initialized so that when NGINX binds to $PORT
+	#are app is ready for traffic.
+	while [[ ! -f "$FILE" ]]
+	do
+		echo 'buildpack=supervisord at=app-initialization'
+		sleep 1
+	done
+	echo 'buildpack=supervisord at=app-initialized'
+fi
+
+#This read will block the process waiting on a msg to be put into the fifo.
+#If any of the processes defined above should exit,
+#a msg will be put into the fifo causing the read operation
+#to un-block. The process putting the msg into the fifo
+#will use it's process name as a msg so that we can print the offending
+#process to stdout.
+read exit_process <$psmgr
+ls -al logs/
+echo "buildpack=supervisord at=exit process=$exit_process"
+exit 1

@@ -1,0 +1,45 @@
+image:
+  - Ubuntu
+  - Visual Studio 2019
+skip_tags: true
+pull_requests:
+  do_not_increment_build_number: true
+matrix:
+  fast_finish: true
+environment:
+  APPVEYOR_YML_DISABLE_PS_LINUX: true
+  NUGET_API_KEY:
+    secure: yBUbV2hX9g4oJCmJxZKOszcGAHi34RYzJedDIpyysIvXVpUKYZSzoWtTSqasi+Ou
+  NUGET_SOURCE: https://api.nuget.org/v3/index.json
+  GITHUB_TOKEN:
+    secure: 3bqzyVjmzE137kZ0lmMBKqM725nQd0hKAATVeE2trpWaPS+5bOpZfjy6zD5INfjV
+  CHOCOLATEY_API_KEY:
+    secure: CzGGbCfsVKyCTbY193kYveGQDN5ilsyI30J3FYdo9+IpGsDwi/knjzBqCQbztIzY
+  CHOCOLATEY_SOURCE: https://push.chocolatey.org/
+
+install:
+  - sh: sudo apt-get update && sudo apt-get install -y libgit2-dev
+
+build_script:
+  - ps: .\build.ps1 --target=Init --verbosity=Diagnostic
+  - sh: ./build.sh --target=Init --verbosity=Diagnostic
+  - ps: .\build.ps1 --target=CI --verbosity=Diagnostic
+  - sh: |
+      if [ "$CI_LINUX" == "true" ]; then
+        ./build.sh --target=CI --runtimes=linux-x64 --verbosity=Diagnostic
+      else
+        ./build.sh --target=CI --runtimes=osx-x64 --verbosity=Diagnostic
+      fi
+
+test: off
+
+cache:
+  - tools -> build.config,build/tools_addins.cake
+  - .dotnet -> build.config
+artifacts:
+  - path: "artifacts/archives/*.zip"
+  - path: "**/*.opencover.xml"
+  - path: "**/*.cobertura.xml"
+  - path: "artifacts/packages/nuget/*.nupkg"
+  - path: "artifacts/packages/dotnet/*.nupkg"
+  - path: "artifacts/packages/dotnet/*.snupkg"

@@ -1,0 +1,9 @@
+language: clojure
+jdk:
+- oraclejdk11
+- openjdk11
+script:
+- lein test
+after_success:
+- CLOVERAGE_VERSION=1.1.1 lein cloverage --codecov
+- bash <(curl -s https://codecov.io/bash) -f target/coverage/codecov.json

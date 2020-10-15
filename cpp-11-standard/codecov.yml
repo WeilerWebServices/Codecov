@@ -1,0 +1,3 @@
+ignore:
+  - "include/catch.hpp"
+  - "test/test_index.cpp"

@@ -1,0 +1,76 @@
+version: "3"
+
+services:
+  traefik:
+    image: traefik:v1.7-alpine
+    command:
+      - --api
+      - --docker
+      - --docker.watch
+      - --docker.constraints=tag==web
+      - --entryPoints=Name:http Address::80 Compress::true
+      - --defaultEntryPoints=http
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - /dev/null:/traefik.toml:rw
+    ports:
+      - "5001:80"
+  backup:
+    image: codecov/migrate-backup
+    environment:
+      DATABASE_URL: ${DATABASE_OLD_URL}
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+      - archive-volume:/archive
+      - ./backups:/backups
+    ports:
+      - "5011:5000"
+
+  migrate:
+    image: codecov/migrate
+    ports:
+      - 5000
+    environment:
+      DATABASE_URL: ${DATABASE_OLD_URL}
+    labels:
+      - "traefik.tags=web"
+      - "traefik.backend=web"
+      - "traefik.port=5000"
+      - "traefik.frontend.rule=PathPrefix: /"
+    volumes:
+      - archive-volume:/archive
+
+  postgres9:
+    image: codecov/migrate-pg9
+    ports:
+      - 5009:5000
+    environment:
+      DATABASE_URL: ${DATABASE_OLD_URL}
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+      - archive-volume:/archive
+
+  postgres10:
+    image: codecov/migrate-pg10
+    ports:
+      - 5010:5000
+    environment:
+      DATABASE_URL: ${DATABASE_NEW_URL}
+    volumes:
+      - postgres10-volume:/var/lib/postgresql/data
+      - archive-volume:/archive
+
+  postgres:
+    image: postgres:9.3
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+
+  postgres_db10:
+    image: postgres:10.5-alpine
+    volumes:
+      - postgres10-volume:/var/lib/postgresql/data
+
+volumes:
+  archive-volume:
+  postgres-volume:
+  postgres10-volume:

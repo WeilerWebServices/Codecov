@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+
+psql postgres://postgres@postgres:5432 \
+  -f /old.sql -f /data.sql

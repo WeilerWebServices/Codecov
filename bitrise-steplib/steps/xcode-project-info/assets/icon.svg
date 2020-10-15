@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="256px" height="256px" viewBox="0 0 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>xcode-project-info-stepicon</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#54C3FA" offset="0%"></stop>
+            <stop stop-color="#1586F5" offset="100%"></stop>
+        </linearGradient>
+        <rect id="path-2" x="0" y="0" width="256" height="256"></rect>
+        <linearGradient x1="62.6389714%" y1="39.9557359%" x2="155.019247%" y2="142.071588%" id="linearGradient-4">
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#FFFFFF" stop-opacity="0" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="70.7817359%" y2="100%" id="linearGradient-5">
+            <stop stop-color="#135EA7" stop-opacity="0.855383832" offset="0%"></stop>
+            <stop stop-color="#1E568F" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="New-Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Xcode-Project-Info">
+            <g id="xcode-project-info-stepicon">
+                <mask id="mask-3" fill="white">
+                    <use xlink:href="#path-2"></use>
+                </mask>
+                <use id="Rectangle" fill="url(#linearGradient-1)" xlink:href="#path-2"></use>
+                <g id="hammer" mask="url(#mask-3)" fill="url(#linearGradient-4)">
+                    <g transform="translate(120.742663, 126.367897) rotate(15.000000) translate(-120.742663, -126.367897) translate(67.742663, 16.867897)" id="Oval">
+                        <path d="M83.8777813,24.0167206 C89.7658802,24.1928677 93.0817914,28.9403593 93.1294731,28.9403593 C98.8056887,28.9403593 102.802098,28.9403593 105.162854,28.9403593 C105.162854,20.4696992 105.162854,4.08988294 105.162854,1.58831011 C101.411008,1.58831011 99.9703677,1.58831011 93.1294731,1.58831011 C90.091692,4.02731666 88.9376482,5.54015866 84.6718137,5.74588046 C78.1610914,6.059863 77.7129304,1.42108547e-14 55.1003005,1.42108547e-14 C32.4876705,1.42108547e-14 11.100063,10.4987911 0.251475674,22.7374871 C2.89677857,21.9380581 4.41304652,21.4837596 6.40013686,20.4696992 C19.1395031,13.9684912 31.431747,12.7227067 40.8602111,20.4696992 C51.75933,29.4250699 54.5895882,50.2735105 52.9514825,80.9289994 C51.5202473,107.713114 48.7928513,136.699167 45.8522086,208.440252 C45.644426,213.509399 49.6265709,219 59.9925409,219 C67.6075987,219 72.8268225,213.349173 72.8268225,208.440252 C72.8268225,178.917063 69.9173327,126.677237 68.3552696,80.9289994 C67.2650712,49.0002934 63.7230459,23.4137761 83.8777813,24.0167206 Z"></path>
+                    </g>
+                </g>
+                <g id="icon-/-info" mask="url(#mask-3)" fill="url(#linearGradient-5)">
+                    <g transform="translate(50.000000, 50.000000)">
+                        <path d="M78,136 C110.032515,136 136,110.032515 136,78 C136,45.9674845 110.032515,20 78,20 C45.9674845,20 20,45.9674845 20,78 C20,110.032515 45.9674845,136 78,136 Z M78,156 C34.9217895,156 0,121.07821 0,78 C0,34.9217895 34.9217895,0 78,0 C121.07821,0 156,34.9217895 156,78 C156,121.07821 121.07821,156 78,156 Z" id="Oval-6" fill-rule="nonzero" style="mix-blend-mode: multiply;"></path>
+                        <circle id="Oval-7" fill-rule="evenodd" style="mix-blend-mode: multiply;" cx="78.5" cy="37.5" r="10.5"></circle>
+                        <path d="M59.7023151,79.5769595 L53.5671674,60.5412046 L74.9324262,53.6552671 C81.960877,51.3900255 88.9358764,57.2623876 87.9013882,64.5740409 L82.5114713,102.669406 L90.973323,99.8605939 L97.2740403,118.842189 L73.5003221,126.733596 C66.455817,129.071936 59.4087656,123.191166 60.4485751,115.841901 L65.8603199,77.5922591 L59.7023151,79.5769595 Z" id="Path-2" fill-rule="nonzero" style="mix-blend-mode: multiply;"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

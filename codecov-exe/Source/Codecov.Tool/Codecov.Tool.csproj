@@ -1,0 +1,30 @@
+<Project>
+
+    <PropertyGroup>
+        <TargetFrameworks>netcoreapp2.1;netcoreapp3.0</TargetFrameworks>
+        <LangVersion>8.0</LangVersion>
+        <CodeAnalysisRuleSet>.\Codecov.ruleset</CodeAnalysisRuleSet>
+        <PackageId>Codecov.Tool</PackageId>
+        <ToolCommandName>codecov</ToolCommandName>
+        <PackAsTool>true</PackAsTool>
+        <Authors>admiringworm;mathphysics</Authors>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/codecov/codecov-exe</PackageProjectUrl>
+        <PackageIconUrl>https://cdn.jsdelivr.net/gh/codecov/media@0953f4e0d5315fb6d526a248bc88e1bc16506a37/logos/pink.png</PackageIconUrl>
+        <Description>Codecov global executable uploader for PowerShell and .NET applications/libraries. Supports Windows, Linux and OSX.</Description>
+        <Copyright>Copyright (c) 2017-Present Larz White, Kim J. Nordmo</Copyright>
+        <PackageReleaseNotes>All release notes for Codecov can be found on the GitHub site - https://github.com/codecov/codecov-exe/releases/tag/$(Version)</PackageReleaseNotes>
+        <PackageTags>coverage;codecov</PackageTags>
+        <RepositoryUrl>https://github.com/codecov/codecov-exe</RepositoryUrl>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Include="../Codecov/**/*.cs" Exclude="../Codecov/obj/**/*.cs;../Codecov/bin/**/*.cs" />
+    </ItemGroup>
+    <Import Project="../Codecov/Codecov.csproj" />
+    <ItemGroup>
+    <PackageReference Update="CommandLineParser" Version="2.8.0" />
+    <PackageReference Update="Glob" Version="1.1.8" />
+    <PackageReference Update="JetBrains.Annotations" Version="2020.1.0" />
+    </ItemGroup>
+</Project>
